@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'alert_dialog.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,26 +15,29 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: const MyHomePage(title: 'Tic Tac Toe'),
+      home: const MainPage(title: 'Tic Tac Toe'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainPageState extends State<MainPage> {
   int _scoreX = 0;
   int _scoreO = 0;
   bool _turnOfO = true;
   int _filledBoxes = 0;
   final List<String> _xOrOList = ['', '', '', '', '', '', '', '', ''];
+
+  final circle = const Image(image: AssetImage('images/circle.png'));
+  final cross = const Image(image: AssetImage('images/cross.png'));
 
   void _clearBoard({bool clearGame = false}) {
     setState(() {
@@ -53,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildPointsTable() {
-    const labelStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
+    const textStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
 
     return Expanded(
       child: Row(
@@ -63,9 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                const Text('Player O', style: labelStyle),
+                SizedBox(width: 64, height: 64, child: circle),
                 const SizedBox(height: 5),
-                Text(_scoreO.toString())
+                Text(_scoreO.toString(), style: textStyle)
               ],
             ),
           ),
@@ -73,9 +76,9 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                const Text('Player X', style: labelStyle),
+                SizedBox(width: 64, height: 64, child: cross),
                 const SizedBox(height: 5),
-                Text(_scoreX.toString())
+                Text(_scoreX.toString(), style: textStyle)
               ],
             ),
           )
@@ -85,6 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildGrid() {
+    final elements = {'x': cross, 'o': circle, '': null};
     return Expanded(
         flex: 3,
         child: Padding(
@@ -101,15 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade700)),
-                    child: Center(
-                      child: Text(_xOrOList[index],
-                          style: TextStyle(
-                            color: _xOrOList[index] == 'x'
-                                ? Colors.blue
-                                : Colors.red,
-                            fontSize: 40,
-                          )),
-                    ),
+                    child: elements[_xOrOList[index]],
                   ));
             },
           ),
@@ -119,10 +115,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildTurn() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Center(
-        child: Text(
-          _turnOfO ? 'Turn of O' : 'Turn of X',
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Current turn'),
+          const SizedBox(height: 10),
+          _turnOfO
+              ? SizedBox(width: 32, height: 32, child: circle)
+              : SizedBox(width: 32, height: 32, child: cross),
+        ],
       ),
     );
   }
@@ -140,54 +141,30 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _checkWinner() {
+    // Draw
+    if (_filledBoxes == 9) {
+      _showAlertDialog('Draw', '');
+      return;
+    }
+
     // ROWS
-    // first row
-    if (_xOrOList[0] == _xOrOList[1] &&
-        _xOrOList[0] == _xOrOList[2] &&
-        _xOrOList[0] != '') {
-      _showAlertDialog('Winner', _xOrOList[0]);
-      return;
-    }
-
-    // second row
-    if (_xOrOList[3] == _xOrOList[4] &&
-        _xOrOList[3] == _xOrOList[5] &&
-        _xOrOList[3] != '') {
-      _showAlertDialog('Winner', _xOrOList[3]);
-      return;
-    }
-
-    // third row
-    if (_xOrOList[6] == _xOrOList[7] &&
-        _xOrOList[6] == _xOrOList[8] &&
-        _xOrOList[6] != '') {
-      _showAlertDialog('Winner', _xOrOList[6]);
-      return;
+    for (int i = 0; i <= 6; i += 3) {
+      if (_xOrOList[i] == _xOrOList[i + 1] &&
+          _xOrOList[i] == _xOrOList[i + 2] &&
+          _xOrOList[i] != '') {
+        _showAlertDialog('Winner', _xOrOList[i]);
+        return;
+      }
     }
 
     // COLUMNS
-    // first column
-    if (_xOrOList[0] == _xOrOList[3] &&
-        _xOrOList[0] == _xOrOList[6] &&
-        _xOrOList[0] != '') {
-      _showAlertDialog('Winner', _xOrOList[0]);
-      return;
-    }
-
-    // second column
-    if (_xOrOList[1] == _xOrOList[4] &&
-        _xOrOList[1] == _xOrOList[7] &&
-        _xOrOList[1] != '') {
-      _showAlertDialog('Winner', _xOrOList[1]);
-      return;
-    }
-
-    // third column
-    if (_xOrOList[2] == _xOrOList[5] &&
-        _xOrOList[2] == _xOrOList[8] &&
-        _xOrOList[2] != '') {
-      _showAlertDialog('Winner', _xOrOList[2]);
-      return;
+    for (int i = 0; i <= 2; i++) {
+      if (_xOrOList[i] == _xOrOList[i + 3] &&
+          _xOrOList[i] == _xOrOList[i + 6] &&
+          _xOrOList[i] != '') {
+        _showAlertDialog('Winner', _xOrOList[i]);
+        return;
+      }
     }
 
     // DIAGONS
@@ -205,11 +182,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _xOrOList[2] != '') {
       _showAlertDialog('Winner', _xOrOList[2]);
       return;
-    }
-
-    // Draw
-    if (_filledBoxes == 9) {
-      _showAlertDialog('Draw', '');
     }
   }
 
