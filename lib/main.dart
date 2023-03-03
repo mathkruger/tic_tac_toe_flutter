@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe_flutter/src/view/game_view.dart';
+import 'package:tic_tac_toe_flutter/src/view/main_view.dart';
 
 void main() {
   runApp(const App());
@@ -11,11 +12,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Tic Tac Toe',
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: const GameView(title: 'Tic Tac Toe'),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const MainView(title: 'Home'),
+        '/game': (context) => GameView(title: 'Game'),
+      },
     );
   }
 }

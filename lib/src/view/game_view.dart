@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe_flutter/src/controller/game_controller.dart';
 
-class GameView extends StatefulWidget {
-  const GameView({Key? key, required this.title}) : super(key: key);
+import '../model/game_model.dart';
 
+class GameView extends StatefulWidget {
   final String title;
+
+  const GameView({Key? key, required this.title}) : super(key: key);
 
   @override
   State<GameView> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<GameView> {
-  late GameController controller;
+  GameController controller = GameController();
+
   final circle = const Image(image: AssetImage('images/circle.png'));
   final cross = const Image(image: AssetImage('images/cross.png'));
 
@@ -72,7 +75,8 @@ class _MainPageState extends State<GameView> {
 
                       if (winner != null) {
                         controller.outputWinner(
-                            winner == '' ? 'Draw' : 'Winner', winner, () {
+                            context, winner == '' ? 'Draw' : 'Winner', winner,
+                            () {
                           _matchEnded(winner);
                         });
                       }
@@ -107,8 +111,6 @@ class _MainPageState extends State<GameView> {
 
   @override
   Widget build(BuildContext context) {
-    controller = GameController(context);
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

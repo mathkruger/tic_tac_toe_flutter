@@ -1,21 +1,32 @@
 class GameModel {
-  static int _scoreX = 0;
-  static int _scoreO = 0;
-  static bool _turnOfO = true;
-  static int _filledBoxes = 0;
-  static final List<String> _xOrOList = ['', '', '', '', '', '', '', '', ''];
+  int _scoreX = 0;
+  int _scoreO = 0;
+  bool _turnOfO = true;
+  int _filledBoxes = 0;
+  final List<String> _xOrOList = ['', '', '', '', '', '', '', '', ''];
 
-  static get scoreX => _scoreX;
-  static set scoreX(value) => _scoreX = value;
+  get scoreX => _scoreX;
+  set scoreX(value) => _scoreX = value;
 
-  static get scoreO => _scoreO;
-  static set scoreO(value) => _scoreO = value;
+  get scoreO => _scoreO;
+  set scoreO(value) => _scoreO = value;
 
-  static get turnOfO => _turnOfO;
-  static set turnOfO(value) => _turnOfO = value;
+  get turnOfO => _turnOfO;
+  set turnOfO(value) => _turnOfO = value;
 
-  static get filledBoxes => _filledBoxes;
-  static set filledBoxes(value) => _filledBoxes = value;
+  get filledBoxes => _filledBoxes;
+  set filledBoxes(value) => _filledBoxes = value;
 
-  static get xOrOList => _xOrOList;
+  get xOrOList => _xOrOList;
+
+  void restart() {
+    scoreO = 0;
+    scoreX = 0;
+    turnOfO = true;
+    filledBoxes = 0;
+
+    for (int i = 0; i < xOrOList.length; i++) {
+      xOrOList[i] = '';
+    }
+  }
 }
